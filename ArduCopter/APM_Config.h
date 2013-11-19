@@ -16,10 +16,10 @@
 //#define COPTER_LEDS DISABLED 
 
 // GPS port speed (Serial2) 38400 by default
-#define SERIAL2_BAUD 38400
+#define SERIAL2_BAUD 9600
 
 // GPS driver selection
-//#define GPS_PROTOCOL GPS_PROTOCOL_NONE
+#define GPS_PROTOCOL GPS_PROTOCOL_NMEA
 /*
 	GPS_PROTOCOL_AUTO   (Default)
 	GPS_PROTOCOL_NONE
@@ -33,7 +33,7 @@
 */
 
 // QuadCopter selected by default
-//#define FRAME_CONFIG HEXA_FRAME
+#define FRAME_CONFIG TRI_FRAME
 /*
  *  options:
  *  QUAD_FRAME
@@ -58,7 +58,7 @@
 //#define HIL_MODE              HIL_MODE_SENSORS    // build for hardware-in-the-loop simulation
 
 // If Arduino IDE hang while uploading firmware to your board, try to change string below, just enter some random characters
-#define BOOTLOADER_BUGFIX "234fs34567"
+#define BOOTLOADER_BUGFIX "234fm2grg"
 
 // User Hooks : For User Developed code that you wish to run
 // Put your variable definitions into the UserVariables.h file (or another file name and then change the #define below).
