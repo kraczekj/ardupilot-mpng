@@ -14,7 +14,7 @@ using namespace MPNG;
 extern const HAL& hal;
 
 // PPM_SUM(CPPM) or PWM Signal processing
-#define SERIAL_PPM SERIAL_PPM_ENABLED
+#define SERIAL_PPM SERIAL_PPM_DISABLED
 /*
 	SERIAL_PPM_DISABLED				// Separated channel signal (PWM) on A8-A15 pins
 	SERIAL_PPM_ENABLED				// For all boards, PPM_SUM pin is A8
@@ -26,11 +26,11 @@ extern const HAL& hal;
 
 // Graupner/Spektrum
 // PITCH,YAW,THROTTLE,ROLL,AUX1,AUX2,CAMPITCH,CAMROLL
-//static uint8_t pinRcChannel[8] = {1, 3, 2, 0, 4, 5, 6, 7}; 
+static uint8_t pinRcChannel[8] = {1, 3, 2, 0, 4, 5, 6, 7}; 
 
 // Standard (Default)
 // ROLL,PITCH,THROTTLE,YAW,MODE,AUX2,CAMPITCH,CAMROLL
-static uint8_t pinRcChannel[8] = {0, 1, 2, 3, 4, 5, 6, 7}; 
+//static uint8_t pinRcChannel[8] = {0, 1, 2, 3, 4, 5, 6, 7}; 
 
 // some Hitec/Sanwa/others
 // PITCH,ROLL,THROTTLE,YAW,AUX1,AUX2,CAMPITCH,CAMROLL
