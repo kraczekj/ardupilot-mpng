@@ -14,40 +14,36 @@ using namespace MPNG;
 extern const HAL& hal;
 
 // PPM_SUM(CPPM) or PWM Signal processing
-#define SERIAL_PPM SERIAL_PPM_ENABLED
+#define SERIAL_PPM SERIAL_PPM_DISABLED
 /*
 	SERIAL_PPM_DISABLED				// Separated channel signal (PWM) on A8-A15 pins
 	SERIAL_PPM_ENABLED				// For all boards, PPM_SUM pin is A8
 	SERIAL_PPM_ENABLED_PL1		// Use for RCTIMER CRIUS AIOP Pro v2 ONLY, connect your receiver into PPM SUM pin
 */   
 
-// Uncomment line below in order to use not Standard channel mapping
-//#define RC_MAPPING RC_MAP_STANDARD
-/*
-	RC_MAP_STANDARD 1
-	RC_MAP_GRAUPNER 2
-	RC_MAP_HITEC 3
-	RC_MAP_MULTIWII 4
-	RC_MAP_JR 5
-*/
+//*****************  RC pin mapping  *******************************************************
+// To change pinmapping, uncomment ONE line starting with 'static unit8_t...'
 
-#ifndef RC_MAPPING
-# define RC_MAPPING RC_MAP_STANDARD
-#endif
+// Graupner/Spektrum
+// PITCH,YAW,THROTTLE,ROLL,AUX1,AUX2,CAMPITCH,CAMROLL
+static uint8_t pinRcChannel[8] = {1, 3, 2, 0, 4, 5, 6, 7}; 
 
-#if RC_MAPPING == RC_MAP_STANDARD
-	static uint8_t pinRcChannel[8] = {0, 1, 2, 3, 4, 5, 6, 7}; // ROLL,PITCH,THROTTLE,YAW,MODE,AUX2,CAMPITCH,CAMROLL
-#elif RC_MAPPING == RC_MAP_GRAUPNER
-	static uint8_t pinRcChannel[8] = {1, 3, 2, 0, 4, 5, 6, 7}; // PITCH,YAW,THROTTLE,ROLL,AUX1,AUX2,CAMPITCH,CAMROLL
-#elif RC_MAPPING == RC_MAP_HITEC
-	static uint8_t pinRcChannel[8] = {1, 0, 2, 3, 4, 5, 6, 7}; // PITCH,ROLL,THROTTLE,YAW,AUX1,AUX2,CAMPITCH,CAMROLL
-#elif RC_MAPPING == RC_MAP_MULTIWII
-	static uint8_t pinRcChannel[8] = {1, 2, 0, 3, 4, 5, 6, 7}; // ROLL,THROTTLE,PITCH,YAW,AUX1,AUX2,CAMPITCH,CAMROLL
-#elif RC_MAPPING == RC_MAP_JR
-	static uint8_t pinRcChannel[8] = {1, 2, 0, 3, 5, 6, 4, 7}; // FLAPS:MODE, GEAR:SAVE TRIMM = apm ch7
-#else
-# error Wrong RC_MAPPING
-#endif
+// Standard (Default)
+// ROLL,PITCH,THROTTLE,YAW,MODE,AUX2,CAMPITCH,CAMROLL
+//static uint8_t pinRcChannel[8] = {0, 1, 2, 3, 4, 5, 6, 7}; 
+
+// some Hitec/Sanwa/others
+// PITCH,ROLL,THROTTLE,YAW,AUX1,AUX2,CAMPITCH,CAMROLL
+//static uint8_t pinRcChannel[8] = {1, 0, 2, 3, 4, 5, 6, 7};
+
+// Multiwii
+// ROLL,THROTTLE,PITCH,YAW,AUX1,AUX2,CAMPITCH,CAMROLL
+//static uint8_t pinRcChannel[8] = {1, 2, 0, 3, 4, 5, 6, 7};
+
+// JR
+// FLAPS:MODE, GEAR:SAVE TRIMM = apm ch7
+//static uint8_t pinRcChannel[8] = {1, 2, 0, 3, 5, 6, 4, 7};
+//*****************  End of RC pin mapping  ************************************************
 
 // PPM_SUM filtering
 #define FILTER FILTER_DISABLED
@@ -269,8 +265,9 @@ void MPNGRCInput::init(void* _isrregistry) {
 //	hal.gpio->pinMode(46, GPIO_OUTPUT); // ICP5 pin (PL1) (PPM input) CRIUS v2
 //	hal.gpio->write(46,0);
 
-	TCCR5A = 0; //standard mode with overflow at A and OC B and C interrupts
-	TCCR5B = (1<<CS11); //Prescaler set to 8, resolution of 0.5us
+	//Timer5 already configured in Scheduler
+	//TCCR5A = 0; //standard mode with overflow at A and OC B and C interrupts
+	//TCCR5B = (1<<CS11); //Prescaler set to 8, resolution of 0.5us
 
 #if SERIAL_PPM == SERIAL_PPM_DISABLED
 		FireISRRoutine = _pwm_A8_A15_isr;
@@ -287,8 +284,8 @@ void MPNGRCInput::init(void* _isrregistry) {
 		hal.gpio->pinMode(48, GPIO_INPUT); // ICP5 pin (PL1) (PPM input) CRIUS v2
 		ISRRegistry* isrregistry = (ISRRegistry*) _isrregistry;
 		isrregistry->register_signal(ISR_REGISTRY_TIMER5_CAPT, _ppmsum_PL1_isr);
-		TCCR5B = (1<<CS11) | (1<<ICES5); //Prescaler set to 8, resolution of 0.5us, input capture on rising edge 
-		TIMSK5 |= (1<<ICIE5); // Enable Input Capture interrupt. Timer interrupt mask  
+		TCCR5B |= (1<<ICES5); // Enable input capture on rising edge 
+		TIMSK5 |= (1<<ICIE5); // Enable input capture interrupt. Timer interrupt mask  
 		PCMSK2 = 0;	// Disable INT for pin A8-A15
 #else
 #error You must check SERIAL_PPM mode, something wrong
