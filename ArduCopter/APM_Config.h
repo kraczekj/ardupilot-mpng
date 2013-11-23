@@ -16,10 +16,10 @@
 //#define COPTER_LEDS DISABLED 
 
 // GPS port speed (Serial2) 38400 by default
-#define SERIAL2_BAUD 9600
+#define SERIAL2_BAUD 38400
 
 // GPS driver selection
-#define GPS_PROTOCOL GPS_PROTOCOL_NMEA
+#define GPS_PROTOCOL GPS_PROTOCOL_AUTO
 /*
 	GPS_PROTOCOL_AUTO   (Default)
 	GPS_PROTOCOL_NONE
@@ -50,7 +50,7 @@
 //#define LOGGING_ENABLED       DISABLED            // disable dataflash logging to save 11K of flash space
 //#define MOUNT                 DISABLED            // disable the camera gimbal to save 8K of flash space
 //#define CLI_ENABLED           DISABLED            // disable the CLI (command-line-interface) to save 21K of flash space
-#define AUTOTUNE              DISABLED            // disable the auto tune functionality to save 7k of flash
+//#define AUTOTUNE              DISABLED            // disable the auto tune functionality to save 7k of flash
 
 // redefine size of throttle deadband in pwm (0 ~ 1000)
 //#define THROTTLE_IN_DEADBAND   100
@@ -58,7 +58,7 @@
 //#define HIL_MODE              HIL_MODE_SENSORS    // build for hardware-in-the-loop simulation
 
 // If Arduino IDE hang while uploading firmware to your board, try to change string below, just enter some random characters
-#define BOOTLOADER_BUGFIX "234fm2grg"
+#define BOOTLOADER_BUGFIX "234fm2Cgrg"
 
 // User Hooks : For User Developed code that you wish to run
 // Put your variable definitions into the UserVariables.h file (or another file name and then change the #define below).
